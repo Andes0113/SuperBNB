@@ -1,0 +1,13 @@
+#ifndef Listing_hpp
+#define Listing_hpp
+
+#include <stdio.h>
+#include <string>
+
+#endif
+
+struct Listing{
+    int id, host_id, numHostListings;
+    std::string name, hostName, burrow, neighborhood, roomType;
+    double price,rating;
+};
