@@ -2,7 +2,7 @@ Final Project for COP3530 at University of Florida
 
 Improved AirBnB Processor for New York
 
-Uses dataset "New York City Airbnb Open Data" from: https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data?resource=download
+Uses dataset "New York City Airbnb Open Data" from: https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data
 
 Group Members:
 
