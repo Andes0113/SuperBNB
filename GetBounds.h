@@ -10,11 +10,13 @@ using namespace std;
 
 //#include "ResourcePath.hpp" // Only for XCode build
 
+// We want this to fit to 886 px
 double latitudeToPixel(double latitude){
-    return (40.94747646853455 - latitude) * 2188.952388560688549;
+    return (40.94747646853455 - latitude) * 1939.411816264770054;
 }
+// We want this to fit to 880 px// We want this to fit to 880 px
 double longitudeToPixel(double longitude){
-    return (74.27814874911644 + longitude) * 1674.346211879362761;
+    return (74.27814874911644 + longitude) * 1473.42466645383923;
 }
 unordered_map<string, sf::ConvexShape> GetNeighborhoodBounds(){
     unordered_map<string, sf::ConvexShape> Neighborhoods;
