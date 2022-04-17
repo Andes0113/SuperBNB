@@ -54,6 +54,8 @@ unordered_map<string, sf::ConvexShape> GetNeighborhoodBounds(){
         for(int i = 0; i < coordinates.size(); i++){
             n.setPoint(i, coordinates[i]);
         }
+        if(neighborhood == "Theater District/Times Square") 
+            neighborhood = "Theater District"; // Fixes discrepancy between files
         Neighborhoods[neighborhood] = n;
     }
     
