@@ -107,7 +107,7 @@ Node *insertNode(Node *node, Listing newlist) {
 
 
 
-/////
+///// what is return value 
 Listing search(Node *root,double rating1,double rating2) {
     // If root is NULL
     if (root == NULL)
@@ -126,7 +126,7 @@ Listing search(Node *root,double rating1,double rating2) {
 }
 
 
-/////
+///// Search by multiple criterions
 Listing searchByPrice(Node *root,double price1, double price2) {
 
 
