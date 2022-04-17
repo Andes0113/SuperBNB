@@ -33,6 +33,8 @@ unordered_map<string, sf::ConvexShape> GetNeighborhoodBounds(){
         string neighborhood;
         getline(file, neighborhood);
         neighborhood = neighborhood.substr(3);
+        if(neighborhood != "Midwood")
+            neighborhood = neighborhood.substr(0, neighborhood.size() - 1);
         vector<sf::Vector2f> coordinates;
         while(coords.find(',') != string::npos){
             string newCoord = coords.substr(0, coords.find(','));
