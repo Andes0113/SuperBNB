@@ -96,7 +96,7 @@ Node *insertNode(Node *node, Listing newlist) {
 
 
 
-
+//
 // Listing search(Node *root,double rating1,double rating2) {
 //     // If root is NULL
 //     if (root == NULL)
@@ -131,7 +131,7 @@ std::map<std::string,Node*> createMap( std::vector<Listing> l){
     return mymap;
  }
 
-
+//This one works not well.
 void buildTree(std::vector<Listing> l,std::map<std::string, Node*> mymap) {
     for (std::vector<Listing>::iterator  it = l.begin(); it!=l.end() ; it++)
     {
