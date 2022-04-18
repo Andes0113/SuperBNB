@@ -30,6 +30,10 @@ vector<Listing> GetListings(){
         }
         getline(file, burrow,',');
         getline(file, neighborhood,',');
+        while(std::count(host_name.begin(), host_name.end(), '"') % 2 == 1){
+            getline(file, s, ',');
+            host_name += s;
+        }
         getline(file, latitude,',');
         getline(file, longitude,',');
         getline(file, room_type,',');
