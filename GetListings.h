@@ -18,7 +18,7 @@ vector<Listing> GetListings(){
         string id,name,host_id,host_name,burrow,neighborhood,latitude,longitude,room_type,price,number_of_reviews,numHostListings,rating;
         getline(file, id, ',');
         getline(file, name,',');
-        if(name[0] == '"' && name.substr(1,name.length() - 1).find('"') == -1){
+        if(name[0] == '"' && name.substr(1,name.length() - 1).find('"') == 1){
             getline(file, s, '"');
             name += s;
         }
