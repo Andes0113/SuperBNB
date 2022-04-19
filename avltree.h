@@ -94,7 +94,7 @@ Node *insertNode(Node *node, Listing newlist) {
 }
 
 
-std::vector<Listing> search(Node *root,double rating1,double rating2, double price1, double price2) {
+std::vector<Listing> search(Node *root,double rating1,double rating2, double price1, double price2, std::string neighborhood) {
     std::stack<Node*> s;
     Node *curr=root;
     std::vector<Listing> newListing;
@@ -103,7 +103,7 @@ std::vector<Listing> search(Node *root,double rating1,double rating2, double pri
     {
         /* Reach the left most Node of the
            curr Node */
-        while (curr !=  NULL)
+        while (curr !=  NULL && curr->list.rating >= rating1)
         {
             /* place pointer to a tree node on
                the stack before traversing
@@ -117,13 +117,16 @@ std::vector<Listing> search(Node *root,double rating1,double rating2, double pri
         s.pop();
         if(curr->list.rating>=rating1&&curr->list.rating<=rating2&&
         curr->list.price>=price1&&curr->list.price<=price2){
-          newListing.push_back(curr->list);
+          if(curr->list.neighborhood == neighborhood || neighborhood == ""){
+            newListing.push_back(curr->list);
+          }
         }
  
         /* we have visited the node and its
            left subtree.  Now, it's right
            subtree's turn */
-        curr = curr->right;
+        if(curr->list.rating <= rating2)
+          curr = curr->right;
  
     }
     return newListing;
@@ -161,6 +164,9 @@ class AVLTree{
   };
   void insertListing(Listing l){
     head = insertNode(head, l);
+  }
+  std::vector<Listing> searchListings(double rating1,double rating2, double price1, double price2, std::string neighborhood = ""){
+    return search(head, rating1, rating2, price1, price2, neighborhood);
   }
 };
 
