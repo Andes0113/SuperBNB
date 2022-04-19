@@ -1,8 +1,7 @@
 #include <map>
-
-class Node
+#include <stack>
+struct Node
 {
-public:
     Listing list;
     Node* left=nullptr;
     Node* right=nullptr;
@@ -95,31 +94,41 @@ Node *insertNode(Node *node, Listing newlist) {
 }
 
 
+std::vector<Listing> search(Node *root,double rating1,double rating2, double price1, double price2) {
+    std::stack<Node*> s;
+    Node *curr=root;
+    std::vector<Listing> newListing;
 
-//
-// Listing search(Node *root,double rating1,double rating2) {
-//     // If root is NULL
-//     if (root == NULL)
-//         return ;
-//     // If found, return 
-//     if ( rating1 < root->list.rating )
-//         search(root->left, rating1, rating2);
-     
-//     /* if root's data lies in range,
-//     then prints root's data */
-//     if ( rating1 <= root->list.rating && rating2 >= root->list.rating )
-//         return root->list;
-     
-//     /* recursively call the right subtree */
-//    search(root->right, rating1, rating2);
-// }
+    while (curr != NULL || s.empty() == false)
+    {
+        /* Reach the left most Node of the
+           curr Node */
+        while (curr !=  NULL)
+        {
+            /* place pointer to a tree node on
+               the stack before traversing
+              the node's left subtree */
+            s.push(curr);
+            curr = curr->left;
+        }
 
+        /* Current must be NULL at this point */
+        curr = s.top();
+        s.pop();
+        if(curr->list.rating>=rating1&&curr->list.rating<=rating2&&
+        curr->list.price>=price1&&curr->list.price<=price2){
+          newListing.push_back(curr->list);
+        }
+ 
+        /* we have visited the node and its
+           left subtree.  Now, it's right
+           subtree's turn */
+        curr = curr->right;
+ 
+    }
+    return newListing;
+}
 
-/////
-// Listing searchByPrice(Node *root,double price1, double price2) {
-//   return root->list;
-
-// }
 
 
 std::map<std::string,Node*> createMap( std::vector<Listing> l){
@@ -131,10 +140,27 @@ std::map<std::string,Node*> createMap( std::vector<Listing> l){
     return mymap;
  }
 
-//This one works not well.
-void buildTree(std::vector<Listing> l,std::map<std::string, Node*> mymap) {
-    for (std::vector<Listing>::iterator  it = l.begin(); it!=l.end() ; it++)
-    {
-      mymap[it->neighborhood]=insertNode(mymap[it->neighborhood],*it);
-    }
+
+
+Node* buildTree(std::vector<Listing> L, Node* head){
+  for(int i = 0; i < L.size(); i++){
+    head = insertNode(head, L.at(i));
+  }
+  return head;
 }
+
+class AVLTree{
+  public:
+  Node* head;
+  AVLTree(vector<Listing> l){
+    head=nullptr;
+    head = buildTree(l, head);
+  }
+  AVLTree(){
+    head=nullptr;
+  };
+  void insertListing(Listing l){
+    head = insertNode(head, l);
+  }
+};
+

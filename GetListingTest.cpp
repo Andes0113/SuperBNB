@@ -10,26 +10,42 @@
 using namespace std;
 
 int main()
-{
-    vector<Listing> l;
-    l=GetListings();
-    Node* root=NULL;
-    map<string,Node*> a;
-    a=createMap(l);
-    
-    for (map<string,Node*>::iterator  it = a.begin(); it!=a.end() ; it++)
+{ 
+  vector<Listing> l;
+  l=GetListings();
+
+  //Tree for the whole listings
+  AVLTree fullTree(l);
+  //Tree for look up
+  map<string, AVLTree> treeLookup;
+
+  for (vector<Listing>:: iterator it= l.begin(); it!=l.end() ; it++)
+  {
+    if( treeLookup.count(it->neighborhood) == 0)//not found
     {
-      cout<<it->first<<endl;        
+      vector<Listing> newListing;
+      newListing.push_back(*it);
+      AVLTree newTree = AVLTree(newListing);
+      treeLookup[it->neighborhood] = newTree;
     }
-    for (map<string,Node*>::iterator  it = a.begin(); it!=a.end() ; it++)
-    {
-      it->second=root;       
-    }    
-    buildTree(l,a);//seems the buildTree function doesn't work
-    for (map<string,Node*>::iterator  it = a.begin(); it!=a.end() ; it++)
-    {
-      cout<<it->second->list.rating<<endl;        
+    else{
+      treeLookup[it->neighborhood].insertListing(*it);
     }
-    return 0;
+  }
+
+  
+
+  //cout<<treeLookup["Kensington"].head->right->list.rating;
+
+
+  //test example for search function
+  vector<Listing> b;  
+  b=search(treeLookup["Kensington"].head,0.0,8.0,10,300);
+  for (vector<Listing>:: iterator it= b.begin(); it!=b.end() ; it++)
+  {
+    cout<<it->rating<<endl;
+  }
+  
+  return 0;
 
 }
