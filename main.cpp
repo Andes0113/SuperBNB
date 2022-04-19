@@ -4,6 +4,8 @@
 #include "GetBounds.h"
 #include "GetListings.h"
 #include "ConvexContains.h"
+#include "avltree.h"
+#include "ListingGraphics.h"
 
 // Only for XCode build
 //#include "ResourcePath.hpp"
@@ -14,39 +16,49 @@ int main(int, char const**)
     sf::Color selColor = sf::Color(77,139,240, 160);
     sf::Color unselColor = sf::Color(0,0,0,0);
     // Create the main window
-    sf::RenderWindow window(sf::VideoMode(1600, 900), "SFML window");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SuperBNB New York");
     window.setFramerateLimit(60);
     unordered_map<std::string, sf::ConvexShape> NeighborhoodBounds = GetNeighborhoodBounds();
+    
     vector<Listing> listings = GetListings();
+    std::vector<Listing> small;
+    small.push_back(listings[0]);
+    AVLTree fullAVL(small);
+    for(int i = 1; i < listings.size(); i++){
+        fullAVL.insertListing(listings[i]);
+    }
+    
+    // Set the Icon
+    sf::Image icon;
+    if (!icon.loadFromFile( "icon.png")) {
+        return EXIT_FAILURE;
+    }
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     // Load a sprite to display
     sf::Texture texture;
-    if (!texture.loadFromFile("cute_image.jpg")) {
+    if (!texture.loadFromFile( "NYCMAP.jpg")) {
         return EXIT_FAILURE;
     }
-
-    // Create a graphical text to display
     sf::Font font;
-    if (!font.loadFromFile("sansation.ttf")) {
+    if (!font.loadFromFile( "sansation.ttf")) {
         return EXIT_FAILURE;
     }
 
     sf::Sprite sprite(texture);
-        sprite.setPosition(520.f, 0.0);
+    sprite.setPosition(520.f, 0.0);
     
-    Listing l = listings[0];
-    sf::RectangleShape selectedListing;
-    selectedListing.setFillColor(listingColor);
-    selectedListing.setSize(sf::Vector2f(880.f,200.f));
-    selectedListing.setPosition(520.f, 880.f);
-    sf::Text text(l.name, font, 30);
-    text.setFillColor(sf::Color::White);
-    text.setPosition(520.f, 880.f);
+    ListingGraphic selectedGraphic(GetListings()[0], 520.f, 886.f, font);
+    selectedGraphic.base.setSize(sf::Vector2f(880.f, 200.f));
+    selectedGraphic.setListing(GetListings()[0]);
+    
+    vector<ListingGraphic> listGraphics;
+    for(int i = 0; i < 4; i++){
+        listGraphics.push_back(ListingGraphic(GetListings()[i], 2, 280 + i * 200, font));
+    }
 
     string selectedNeighborhood = "";
     int ticksSinceLastQuery = 10;
-
-    // Start the game loop
     while (window.isOpen())
     {
         // Process events
@@ -57,7 +69,7 @@ int main(int, char const**)
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
-
+                        
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                 
                 
@@ -98,28 +110,50 @@ int main(int, char const**)
                 // After this, we can query our data structures with selectedNeighborhood
                 if(conflicts != 0) { // Don't want to do unnecessary queries if clicking outside of a neighborhood
                     // Do data structure queries inside here
-                    std::cout << selectedNeighborhood << std::endl;
+                    if(fullAVL.searchListings(0.0, 5.0, 100.0, 200.0, selectedNeighborhood).size() != 0){
+                        std::vector<Listing> queryRes = fullAVL.searchListings(0.0, 5.0, 0.0, 10000.0, selectedNeighborhood);
+                        for(int i = 0; i < 4; i++){
+                            if(i == queryRes.size())
+                                break;
+                            listGraphics[i].setListing(queryRes[queryRes.size() - (1 + i)]);
+                        }
+                        selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
+                    }
+                    else{
+                        selectedGraphic.name.setString("No listings available for that query");
+                    }
                 }
                 
                 
             }
         }
         ticksSinceLastQuery++;
-
+        
         // Clear screen
         window.clear();
 
-        // Draw the sprite
+        // Draw scene
         window.draw(sprite);
-        window.draw(selectedListing);
+        for(int i = 0; i < listGraphics.size(); i++){
+            window.draw(listGraphics[i].base);
+            window.draw(listGraphics[i].name);
+            window.draw(listGraphics[i].description1);
+            window.draw(listGraphics[i].description2);
 
+        }
+        
         auto iter = NeighborhoodBounds.begin();
         for(; iter != NeighborhoodBounds.end(); iter++){
             window.draw(iter->second);
         }
 
-        // Draw the string
-        window.draw(text);
+        // Draw text
+        window.draw(selectedGraphic.base);
+        window.draw(selectedGraphic.name);
+        window.draw(selectedGraphic.description1);
+        window.draw(selectedGraphic.description2);
+
+
 
         // Update the window
         window.display();

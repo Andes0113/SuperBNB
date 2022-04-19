@@ -1,6 +1,6 @@
 #ifndef Listing_hpp
 #define Listing_hpp
-
+#pragma once
 #include <stdio.h>
 #include <string>
 
