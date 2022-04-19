@@ -63,7 +63,7 @@ Node *insertNode(Node *node, Listing newlist) {
   if (node == NULL)
     return (newNode(newlist));
 
-  if (newlist.rating < node->list.rating)
+  if (newlist.rating <= node->list.rating)
     node->left = insertNode(node->left,newlist);
   else if (newlist.rating > node->list.rating)
     node->right = insertNode(node->right, newlist);
@@ -75,7 +75,7 @@ Node *insertNode(Node *node, Listing newlist) {
                height(node->right));
   int balanceFactor = getBalanceFactor(node);
   if (balanceFactor > 1) {
-    if (newlist.rating < node->left->list.rating) {
+    if (newlist.rating <= node->left->list.rating) {
       return rightRotate(node);
     } else if (newlist.rating > node->left->list.rating) {
       node->left = leftRotate(node->left);
@@ -85,7 +85,7 @@ Node *insertNode(Node *node, Listing newlist) {
   if (balanceFactor < -1) {
     if (newlist.rating > node->right->list.rating) {
       return leftRotate(node);
-    } else if (newlist.rating < node->right->list.rating) {
+    } else if (newlist.rating <= node->right->list.rating) {
       node->right = rightRotate(node->right);
       return leftRotate(node);
     }
