@@ -8,6 +8,6 @@ Group Members:
 
 Alex Rowe (https://github.com/andes0113)
 
-Nicholas Comatas
+Nicholas Comatas (https://github.com/Comatas)
 
 Yanjun Shi (https://github.com/GatorKirk)
