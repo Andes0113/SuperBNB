@@ -8,6 +8,7 @@
 
 
 struct ListingGraphic{
+    Listing list;
     sf::RectangleShape base;
     sf::Text name;
     sf::Text description1;
@@ -33,10 +34,11 @@ struct ListingGraphic{
         setListing(l);
     }
     void setListing(Listing l){
+        list = l;
         name.setString(l.name);
         int desc1X = base.getGlobalBounds().left + 10;
         if(name.getGlobalBounds().width > base.getGlobalBounds().width - 10){
-            name.setString(l.name.substr(0, 30) + "\n" + l.name.substr(30));
+            name.setString(l.name.substr(0, l.name.size() / 2) + "\n" + l.name.substr(l.name.size() / 2));
             int desc2X = desc1X + description1.getLocalBounds().width + 10;
             description1.setPosition(base.getGlobalBounds().left + 5, base.getGlobalBounds().top + 75);
             description2.setPosition(desc2X, base.getGlobalBounds().top + 75);
