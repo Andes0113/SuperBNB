@@ -6,6 +6,7 @@
 #include "ConvexContains.h"
 #include "AVLMap.h"
 #include "ListingGraphics.h"
+#include "TextField.h"
 #include "GenerateRandListings.h"
 
 // Only for XCode build
@@ -16,7 +17,7 @@ int main(int, char const**)
     Listing nullListing;
     sf::Clock exeTimeClock;
     sf::Color listingColor = sf::Color(77,139,240);
-    sf::Color selColor = sf::Color(77,139,240, 160);
+    sf::Color selColor = sf::Color(77,139,240,160);
     sf::Color unselColor = sf::Color(0,0,0,0);
     bool useMapAVL = false;
     
@@ -62,10 +63,33 @@ int main(int, char const**)
     // Load interactive map of NYC
     sf::Sprite NYCMap(texture);
     NYCMap.setPosition(520.f, 0.0);
+        
+    sf::RectangleShape fieldBox;
+    fieldBox.setSize(sf::Vector2f(516, 168));
+    fieldBox.setFillColor(listingColor);
+    fieldBox.setOutlineColor(sf::Color::Black);
+    fieldBox.setOutlineThickness(2);
+    fieldBox.setPosition(2, 2);
     
-    ListingGraphic selectedGraphic(GetListings()[0], 520.f, 886.f, font);
-    selectedGraphic.base.setSize(sf::Vector2f(880.f, 200.f));
-    selectedGraphic.setListing(GetListings()[0]);
+    std::vector<TextField*> textFields;
+    
+    sf::Text ratingText("Rating:", font, 40);
+    ratingText.setFillColor(sf::Color::White);
+    ratingText.setPosition(58, 20);
+    TextField ratingField1(40, 90, "0.0", font);
+    TextField ratingField2(140, 90, "5.0", font);
+    textFields.push_back(&ratingField1);
+    textFields.push_back(&ratingField2);
+    
+    sf::Text priceText("Price:", font, 40);
+    priceText.setFillColor(sf::Color::White);
+    priceText.setPosition(310, 20);
+    TextField priceField1(240, 90, "0.00", font);
+    TextField priceField2(380, 90, "200.0", font);
+    priceField1.setSize(100, 50);
+    priceField2.setSize(100, 50);
+    textFields.push_back(&priceField1);
+    textFields.push_back(&priceField2);
     
     // Grpahic for Deselect Neighborhood button
     sf::RectangleShape deselect;
@@ -134,6 +158,10 @@ int main(int, char const**)
     exeTimeClock.restart();
     std::vector<Listing> queryRes = fullAVL.searchListings(rating1, rating2, price1, price2);
     etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
+    
+    ListingGraphic selectedGraphic(GetListings()[0], 520.f, 886.f, font);
+    selectedGraphic.base.setSize(sf::Vector2f(880.f, 200.f));
+    selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
         
     vector<ListingGraphic> listGraphics;
     for(int i = 0; i < 4; i++){
@@ -152,6 +180,26 @@ int main(int, char const**)
             // Close window: exit
             if (event.type == sf::Event::Closed) {
                 window.close();
+            }
+            
+            if (event.type == sf::Event::TextEntered)
+            {
+                for(auto field: textFields){
+                    std::string fString = field->GetText();
+                    if(event.text.unicode == '\b'){
+                        if(field->selected){
+                            if(fString.size() > 0)
+                                fString.erase(fString.size() -1, 1);
+                            field->SetText(fString);
+                        }
+                    }else{
+                        char key = static_cast<char>(event.text.unicode);
+                        if(field->selected && field->GetText().size() < 6){
+                            if((event.text.unicode > 47 && event.text.unicode < 58) || key == '.')
+                                field->SetText(field->GetText() + key);
+                        }
+                    }
+                }
             }
             
             if(event.type == sf::Event::KeyPressed){
@@ -202,6 +250,12 @@ int main(int, char const**)
                     if(listGraphics[i].base.getGlobalBounds().contains(position)){
                         selectedGraphic.setListing(listGraphics[i].list);
                     }
+                }
+                
+                for(auto f : textFields){
+                    f->Deselect();
+                    if(f->field.getGlobalBounds().contains(position))
+                        f->Select();
                 }
                 if(chooseFull.getGlobalBounds().contains(position)){
                     useMapAVL = false;
@@ -315,6 +369,15 @@ int main(int, char const**)
         window.draw(sbText);
         window.draw(snText);
         window.draw(etText);
+        
+        
+        window.draw(fieldBox);
+        window.draw(ratingText);
+        window.draw(priceText);
+        for(auto field: textFields){
+            window.draw(field->field);
+            window.draw(field->text);
+        }
         
 
         // Update the window
