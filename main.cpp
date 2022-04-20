@@ -76,7 +76,26 @@ int main(int, char const**)
     sf::Text dsText("Deselect Neighborhood", font, 25);
     dsText.setFillColor(sf::Color::White);
     dsText.setPosition(547, 17);
-
+    
+    sf::RectangleShape chooseFull;
+    chooseFull.setSize(sf::Vector2f(150, 50));
+    chooseFull.setFillColor(listingColor);
+    chooseFull.setOutlineColor(sf::Color::Black);
+    chooseFull.setOutlineThickness(5);
+    chooseFull.setPosition(530, 65);
+    sf::Text cfText("Full AVL", font, 25);
+    cfText.setFillColor(sf::Color::White);
+    cfText.setPosition(555, 75);
+    
+    sf::RectangleShape chooseMap;
+    chooseMap.setSize(sf::Vector2f(150, 50));
+    chooseMap.setFillColor(listingColor);
+    chooseMap.setOutlineColor(sf::Color::Black);
+    chooseMap.setOutlineThickness(5);
+    chooseMap.setPosition(680, 65);
+    sf::Text cmText("AVL Map", font, 25);
+    cmText.setFillColor(sf::Color::White);
+    cmText.setPosition(705, 75);
     
     sf::RectangleShape searchBox;
     searchBox.setSize(sf::Vector2f(510, 50));
@@ -103,13 +122,26 @@ int main(int, char const**)
                         
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                 sf::Vector2f position = sf::Vector2f(sf::Mouse::getPosition(window));
-                if(searchBox.getGlobalBounds().contains(position)){
+                if(chooseFull.getGlobalBounds().contains(position)){
+                    useMapAVL = false;
+                }else if(chooseMap.getGlobalBounds().contains(position)){
+                    useMapAVL = true;
+                }else if(deselect.getGlobalBounds().contains(position)){
+                    if(selectedNeighborhood != "")
+                        NeighborhoodBounds[selectedNeighborhood].setFillColor(unselColor);
+                    selectedNeighborhood = "";
+                }
+                else if(searchBox.getGlobalBounds().contains(position)){
                     exeTimeClock.restart();
                     double rating1 = 0.0;
                     double rating2 = 5.0;
                     double price1 = 0.0;
                     double pric2 = 10000.0;
-                    std::vector<Listing> queryRes = fullAVL.searchListings(0.0, 5.0, 0.0, 10000.0, selectedNeighborhood);
+                    std::vector<Listing> queryRes;
+                    if(useMapAVL)
+                        queryRes = mapAVL.search(0.0, 5.0, 0.0, 10000.0, selectedNeighborhood);
+                    else
+                        queryRes = fullAVL.searchListings(0.0, 5.0, 0.0, 10000.0, selectedNeighborhood);
                     std::cout << exeTimeClock.getElapsedTime().asMilliseconds() << std::endl;
                     // After this, we can query our data structures with selectedNeighborhood
                     for(int i = 0; i < 4; i++){
@@ -189,10 +221,15 @@ int main(int, char const**)
         }
         
         window.draw(deselect);
+        window.draw(chooseFull);
+        window.draw(chooseMap);
         window.draw(searchBox);
-        window.draw(sbText);
+        
         window.draw(dsText);
-
+        window.draw(cfText);
+        window.draw(cmText);
+        window.draw(sbText);
+        
 
         // Update the window
         window.display();
