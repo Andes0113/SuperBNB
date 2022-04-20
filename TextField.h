@@ -52,3 +52,16 @@ struct TextField{
         text.setPosition(textX, textY);
     }
 };
+
+double ParseDouble(TextField field){
+    std::string dub = field.GetText();
+    if(dub[0] == '.')
+        dub = '0' + dub;
+    if(dub.find('.') == string::npos)
+        dub = dub + ".0";
+    std::string postDec = dub.substr(dub.find('.') + 1);
+    if(postDec.find('.') != string::npos){
+        dub = dub.substr(0, dub.find('.')) + '.' + postDec.substr(0, dub.find('.'));
+    }
+    return stod(dub);;
+}

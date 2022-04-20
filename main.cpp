@@ -261,12 +261,18 @@ int main(int, char const**)
                     useMapAVL = false;
                 }else if(chooseMap.getGlobalBounds().contains(position)){
                     useMapAVL = true;
-                }else if(deselect.getGlobalBounds().contains(position)){
+                }
+                else if(deselect.getGlobalBounds().contains(position)){
                     if(selectedNeighborhood != "")
                         NeighborhoodBounds[selectedNeighborhood].setFillColor(unselColor);
                     selectedNeighborhood = "";
                 }
                 else if(searchBox.getGlobalBounds().contains(position)){
+                    // Querying our data set
+                    rating1 = ParseDouble(ratingField1);
+                    rating2 = ParseDouble(ratingField2);
+                    price1 = ParseDouble(priceField1);
+                    price2 = ParseDouble(priceField2);
                     exeTimeClock.restart();
                     if(useMapAVL)
                         queryRes = mapAVL.search(rating1, rating2, price1, price2, selectedNeighborhood);
