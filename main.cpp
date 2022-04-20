@@ -34,7 +34,7 @@ int main(int, char const**)
     }
     
     vector<Listing> listings = GetListings();
-    vector<Listing> randListings = GenerateRandomListings(1000000);
+    vector<Listing> randListings = GenerateRandomListings(200000);
     listings.insert(listings.end(), randListings.begin(), randListings.end());
     
     AVLTree fullAVL(listings);
@@ -98,7 +98,7 @@ int main(int, char const**)
     textFields.push_back(&priceField2);
     
     // Search through neighborhoods
-    TextField neighborSearch(1405, 5, " ", font);
+    TextField neighborSearch(1405, 5, "", font);
     neighborSearch.setSize(510, 50);
     neighborSearch.maxText = 25;
     textFields.push_back(&neighborSearch);
