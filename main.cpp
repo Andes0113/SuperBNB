@@ -32,8 +32,8 @@ int main(int, char const**)
     }
     
     vector<Listing> listings = GetListings();
-    //vector<Listing> randListings = GenerateRandomListings(1000000);
-    //listings.insert(listings.end(), randListings.begin(), randListings.end());
+    vector<Listing> randListings = GenerateRandomListings(10000);
+    listings.insert(listings.end(), randListings.begin(), randListings.end());
     
     AVLTree fullAVL(listings);
     AVLMap mapAVL(listings);
@@ -119,7 +119,6 @@ int main(int, char const**)
     
     exeTimeClock.restart();
     std::vector<Listing> initQuery = fullAVL.searchListings(rating1, rating2, price1, price2);
-    std::cout << exeTimeClock.getElapsedTime().asMilliseconds() << std::endl;
     etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
     
     vector<ListingGraphic> listGraphics;
@@ -141,6 +140,11 @@ int main(int, char const**)
                         
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                 sf::Vector2f position = sf::Vector2f(sf::Mouse::getPosition(window));
+                for(int i = 0; i < listGraphics.size(); i++){
+                    if(listGraphics[i].base.getGlobalBounds().contains(position)){
+                        selectedGraphic.setListing(listGraphics[i].list);
+                    }
+                }
                 if(chooseFull.getGlobalBounds().contains(position)){
                     useMapAVL = false;
                 }else if(chooseMap.getGlobalBounds().contains(position)){
@@ -157,8 +161,8 @@ int main(int, char const**)
                         queryRes = mapAVL.search(rating1, rating2, price1, price2, selectedNeighborhood);
                     else
                         queryRes = fullAVL.searchListings(rating1, rating2, price1, price2, selectedNeighborhood);
-                    std::cout << exeTimeClock.getElapsedTime().asMilliseconds() << std::endl;
                     etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
+                    
                     // After this, we can query our data structures with selectedNeighborhood
                     for(int i = 0; i < 4; i++){
                         if(i >= queryRes.size())
@@ -166,16 +170,16 @@ int main(int, char const**)
                         else
                             listGraphics[i].setListing(queryRes[queryRes.size() - (1 + i)]);
                     }
+                    
                     if(queryRes.size() == 0){
                         Listing nullListing;
                         nullListing.name = "No listings found for that query";
                         nullListing.id = 0;
                         listGraphics[0].setListing(nullListing);
-                    }
-                    if(queryRes.size() > 0)
+                        selectedGraphic.setListing(nullListing);
+                    }else{
                         selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
-                    else
-                        selectedGraphic.setListing(Listing());
+                    }
                 }
                 else{
                     auto iter = NeighborhoodBounds.begin();
