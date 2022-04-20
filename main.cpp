@@ -25,9 +25,8 @@ int main(int, char const**)
     window.setFramerateLimit(60);
     
     unordered_map<std::string, sf::ConvexShape> NeighborhoodBounds = GetNeighborhoodBounds();
-    unordered_map<std::string, sf::ConvexShape> bounds = GetNeighborhoodBounds();
     vector<std::string> neighborhoods;
-    for(auto iter = bounds.begin(); iter != bounds.end(); iter++){
+    for(auto iter = NeighborhoodBounds.begin(); iter != NeighborhoodBounds.end(); iter++){
         neighborhoods.push_back(iter->first);
     }
     
@@ -50,16 +49,17 @@ int main(int, char const**)
     }
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    // Load a sprite to display
+    // Load NYC Map jpg
     sf::Texture texture;
     if (!texture.loadFromFile("NYCMAP.jpg")) {
         return EXIT_FAILURE;
     }
+    // Load font
     sf::Font font;
     if (!font.loadFromFile("sansation.ttf")) {
         return EXIT_FAILURE;
     }
-
+    // Load interactive map of NYC
     sf::Sprite NYCMap(texture);
     NYCMap.setPosition(520.f, 0.0);
     
@@ -67,6 +67,7 @@ int main(int, char const**)
     selectedGraphic.base.setSize(sf::Vector2f(880.f, 200.f));
     selectedGraphic.setListing(GetListings()[0]);
     
+    // Grpahic for Deselect Neighborhood button
     sf::RectangleShape deselect;
     deselect.setSize(sf::Vector2f(300, 50));
     deselect.setFillColor(listingColor);
@@ -76,7 +77,7 @@ int main(int, char const**)
     sf::Text dsText("Deselect Neighborhood", font, 25);
     dsText.setFillColor(sf::Color::White);
     dsText.setPosition(547, 17);
-    
+    // Graphic for Full AVL button
     sf::RectangleShape chooseFull;
     chooseFull.setSize(sf::Vector2f(150, 50));
     chooseFull.setFillColor(listingColor);
@@ -86,7 +87,7 @@ int main(int, char const**)
     sf::Text cfText("Full AVL", font, 25);
     cfText.setFillColor(sf::Color::White);
     cfText.setPosition(555, 75);
-    
+    // Graphic for Map AVL Button
     sf::RectangleShape chooseMap;
     chooseMap.setSize(sf::Vector2f(150, 50));
     chooseMap.setFillColor(listingColor);
@@ -96,7 +97,7 @@ int main(int, char const**)
     sf::Text cmText("AVL Map", font, 25);
     cmText.setFillColor(sf::Color::White);
     cmText.setPosition(705, 75);
-    
+    // Graphic for elapsed time
     sf::RectangleShape elapsedTimeBox;
     elapsedTimeBox.setSize(sf::Vector2f(306, 50));
     elapsedTimeBox.setFillColor(listingColor);
@@ -106,17 +107,8 @@ int main(int, char const**)
     sf::Text etText("Elapsed Time: 0ms", font, 25);
     etText.setFillColor(sf::Color::White);
     etText.setPosition(550, 130);
-        
-    sf::RectangleShape searchBox;
-    searchBox.setSize(sf::Vector2f(510, 50));
-    searchBox.setFillColor(listingColor);
-    searchBox.setOutlineColor(sf::Color::Black);
-    searchBox.setOutlineThickness(5);
-    searchBox.setPosition(5, 225);
-    sf::Text sbText("Search", font, 45);
-    sbText.setFillColor(sf::Color::White);
-    sbText.setPosition(187, 220);
-        
+    
+    // Graphic for selected Neighborhood
     sf::RectangleShape selectedNeighborBox;
     selectedNeighborBox.setSize(sf::Vector2f(516, 51));
     selectedNeighborBox.setFillColor(listingColor);
@@ -126,15 +118,29 @@ int main(int, char const**)
     sf::Text snText("Neighborhood: None", font, 25);
     snText.setFillColor(sf::Color::White);
     snText.setPosition(5, 180);
+    // Graphic for search box
+    sf::RectangleShape searchBox;
+    searchBox.setSize(sf::Vector2f(510, 50));
+    searchBox.setFillColor(listingColor);
+    searchBox.setOutlineColor(sf::Color::Black);
+    searchBox.setOutlineThickness(5);
+    searchBox.setPosition(5, 225);
+    sf::Text sbText("Search", font, 45);
+    sbText.setFillColor(sf::Color::White);
+    sbText.setPosition(187, 220);
     
+    
+    // Populate the initial AirBNB listing menu with selection from every listing
     exeTimeClock.restart();
-    std::vector<Listing> initQuery = fullAVL.searchListings(rating1, rating2, price1, price2);
+    std::vector<Listing> queryRes = fullAVL.searchListings(rating1, rating2, price1, price2);
     etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
         
     vector<ListingGraphic> listGraphics;
     for(int i = 0; i < 4; i++){
-        listGraphics.push_back(ListingGraphic(initQuery[initQuery.size() - (1 + i)], 2, 280 + i * 200, font));
+        listGraphics.push_back(ListingGraphic(queryRes[queryRes.size() - (1 + i)], 2, 280 + i * 200, font));
     }
+    
+    int queryIndex = 0;
     
     string selectedNeighborhood = "";
     while (window.isOpen())
@@ -146,6 +152,52 @@ int main(int, char const**)
             // Close window: exit
             if (event.type == sf::Event::Closed) {
                 window.close();
+            }
+            
+            if(event.type == sf::Event::KeyPressed){
+                if(event.key.code == sf::Keyboard::Up){
+                    queryIndex--;
+                    if(queryIndex < 0){
+                        queryIndex = 0;
+                    }else{
+                        for(int i = 0; i < 4; i++){
+                            if(i >= queryRes.size() - queryIndex)
+                                listGraphics[i].setListing(Listing());
+                            else
+                                listGraphics[i].setListing(queryRes[queryRes.size() - (1 + i + queryIndex)]);
+                        }
+                        if(queryRes.size() == 0){
+                            Listing nullListing;
+                            nullListing.name = "No listings found for that query";
+                            nullListing.id = 0;
+                            listGraphics[0].setListing(nullListing);
+                            selectedGraphic.setListing(nullListing);
+                        }else{
+                            selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
+                        }
+                    }
+                }
+                else if(event.key.code == sf::Keyboard::Down){
+                    if(queryRes.size() - (1 + queryIndex) > 0){
+                        queryIndex++;
+                    }
+                    for(int i = 0; i < 4; i++){
+                        if(i >= queryRes.size() - queryIndex)
+                            listGraphics[i].setListing(Listing());
+                        else
+                            listGraphics[i].setListing(queryRes[queryRes.size() - (1 + i + queryIndex)]);
+                    }
+                    
+                    if(queryRes.size() == 0){
+                        Listing nullListing;
+                        nullListing.name = "No listings found for that query";
+                        nullListing.id = 0;
+                        listGraphics[0].setListing(nullListing);
+                        selectedGraphic.setListing(nullListing);
+                    }else{
+                        selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
+                    }
+                }
             }
                         
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
@@ -166,7 +218,6 @@ int main(int, char const**)
                 }
                 else if(searchBox.getGlobalBounds().contains(position)){
                     exeTimeClock.restart();
-                    std::vector<Listing> queryRes;
                     if(useMapAVL)
                         queryRes = mapAVL.search(rating1, rating2, price1, price2, selectedNeighborhood);
                     else
@@ -190,6 +241,7 @@ int main(int, char const**)
                     }else{
                         selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
                     }
+                    queryIndex = 0;
                 }
                 else{
                     auto iter = NeighborhoodBounds.begin();
