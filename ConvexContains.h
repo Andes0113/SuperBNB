@@ -6,6 +6,11 @@
 
 #endif /* ConvexContains_h */
 
+/*
+ * Methodology and parts of functions obtained from:
+ * https://stackoverflow.com/questions/38535430/how-to-check-if-point-belongs-to-convexshape
+ */
+
 float distance(sf::Vector2f p1, sf::Vector2f p2){
     float delX = p1.x - p2.x;
     float delY = p1.y - p2.y;
