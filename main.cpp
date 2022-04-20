@@ -172,8 +172,6 @@ int main(int, char const**)
                             nullListing.id = 0;
                             listGraphics[0].setListing(nullListing);
                             selectedGraphic.setListing(nullListing);
-                        }else{
-                            selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
                         }
                     }
                 }
@@ -194,8 +192,6 @@ int main(int, char const**)
                         nullListing.id = 0;
                         listGraphics[0].setListing(nullListing);
                         selectedGraphic.setListing(nullListing);
-                    }else{
-                        selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
                     }
                 }
             }
