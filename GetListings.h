@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include "Listing.hpp"
+#pragma once
 using namespace std;
 
 //#include "ResourcePath.hpp" // Xcode build only
