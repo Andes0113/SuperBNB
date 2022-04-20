@@ -1,5 +1,6 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include <string>
 #include <unordered_map>
 #include "GetBounds.h"
 #include "GetListings.h"
@@ -277,6 +278,11 @@ int main(int, char const**)
                         selectedGraphic.setListing(listGraphics[i].list);
                     }
                 }
+                for(int i = 0; i < nBoxes.size(); i++){
+                    if(nBoxes[i].base.getGlobalBounds().contains(position)){
+                        selectedNeighborhood = nBoxes[i].neighborhood;
+                    }
+                }
                 
                 for(auto f : textFields){
                     f->Deselect();
@@ -292,6 +298,20 @@ int main(int, char const**)
                     if(selectedNeighborhood != "")
                         NeighborhoodBounds[selectedNeighborhood].setFillColor(unselColor);
                     selectedNeighborhood = "";
+                }
+                else if(neighborSearchBox.getGlobalBounds().contains(position)){
+                    std::string nQuery = neighborSearch.GetText();
+                    nQueryRes.clear();
+                    for(int i = 0; i < neighborhoods.size(); i++){
+                        if(neighborhoods[i].find(nQuery) != string::npos)
+                            nQueryRes.push_back(neighborhoods[i]);
+                    }
+                    for(int i = 0; i < 18; i++){
+                        if(i >= nQueryRes.size())
+                            nBoxes[i].SetNeighborhood("");
+                        else
+                            nBoxes[i].SetNeighborhood(nQueryRes[i]);
+                    }
                 }
                 else if(searchBox.getGlobalBounds().contains(position)){
                     // Querying our data set
@@ -412,8 +432,10 @@ int main(int, char const**)
         }
         
         for(auto nb: nBoxes){
-            window.draw(nb.base);
-            window.draw(nb.text);
+            if(nb.neighborhood != ""){
+                window.draw(nb.base);
+                window.draw(nb.text);
+            }
         }
         
         window.draw(neighborSearchBox);
