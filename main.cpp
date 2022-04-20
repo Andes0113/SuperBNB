@@ -97,16 +97,6 @@ int main(int, char const**)
     cmText.setFillColor(sf::Color::White);
     cmText.setPosition(705, 75);
     
-    sf::RectangleShape searchBox;
-    searchBox.setSize(sf::Vector2f(510, 50));
-    searchBox.setFillColor(listingColor);
-    searchBox.setOutlineColor(sf::Color::Black);
-    searchBox.setOutlineThickness(5);
-    searchBox.setPosition(5, 225);
-    sf::Text sbText("Search", font, 45);
-    sbText.setFillColor(sf::Color::White);
-    sbText.setPosition(187, 220);
-    
     sf::RectangleShape elapsedTimeBox;
     elapsedTimeBox.setSize(sf::Vector2f(306, 50));
     elapsedTimeBox.setFillColor(listingColor);
@@ -116,11 +106,31 @@ int main(int, char const**)
     sf::Text etText("Elapsed Time: 0ms", font, 25);
     etText.setFillColor(sf::Color::White);
     etText.setPosition(550, 130);
+        
+    sf::RectangleShape searchBox;
+    searchBox.setSize(sf::Vector2f(510, 50));
+    searchBox.setFillColor(listingColor);
+    searchBox.setOutlineColor(sf::Color::Black);
+    searchBox.setOutlineThickness(5);
+    searchBox.setPosition(5, 225);
+    sf::Text sbText("Search", font, 45);
+    sbText.setFillColor(sf::Color::White);
+    sbText.setPosition(187, 220);
+        
+    sf::RectangleShape selectedNeighborBox;
+    selectedNeighborBox.setSize(sf::Vector2f(516, 51));
+    selectedNeighborBox.setFillColor(listingColor);
+    selectedNeighborBox.setOutlineColor(sf::Color::Black);
+    selectedNeighborBox.setOutlineThickness(2);
+    selectedNeighborBox.setPosition(2, 170);
+    sf::Text snText("Neighborhood: None", font, 25);
+    snText.setFillColor(sf::Color::White);
+    snText.setPosition(5, 180);
     
     exeTimeClock.restart();
     std::vector<Listing> initQuery = fullAVL.searchListings(rating1, rating2, price1, price2);
     etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
-    
+        
     vector<ListingGraphic> listGraphics;
     for(int i = 0; i < 4; i++){
         listGraphics.push_back(ListingGraphic(initQuery[initQuery.size() - (1 + i)], 2, 280 + i * 200, font));
@@ -209,6 +219,10 @@ int main(int, char const**)
                             }
                         }
                     }
+                    if(selectedNeighborhood == "")
+                        snText.setString("Neighborhood: None");
+                    else
+                        snText.setString("Neighborhood: " + selectedNeighborhood);
                 }
             }
         }
@@ -244,12 +258,14 @@ int main(int, char const**)
         window.draw(chooseFull);
         window.draw(chooseMap);
         window.draw(searchBox);
+        window.draw(selectedNeighborBox);
         window.draw(elapsedTimeBox);
         
         window.draw(dsText);
         window.draw(cfText);
         window.draw(cmText);
         window.draw(sbText);
+        window.draw(snText);
         window.draw(etText);
         
 
