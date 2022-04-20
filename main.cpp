@@ -34,7 +34,7 @@ int main(int, char const**)
     }
     
     vector<Listing> listings = GetListings();
-    vector<Listing> randListings = GenerateRandomListings(10000);
+    vector<Listing> randListings = GenerateRandomListings(1000000);
     listings.insert(listings.end(), randListings.begin(), randListings.end());
     
     AVLTree fullAVL(listings);
@@ -43,7 +43,7 @@ int main(int, char const**)
     double rating1 = 0.0;
     double rating2 = 5.0;
     double price1 = 0.0;
-    double price2 = 10000.0;
+    double price2 = 1000.0;
     
     // Set the Icon
     sf::Image icon;
@@ -75,6 +75,7 @@ int main(int, char const**)
     
     std::vector<TextField*> textFields;
     
+    // Rating range selection field
     sf::Text ratingText("Rating:", font, 40);
     ratingText.setFillColor(sf::Color::White);
     ratingText.setPosition(58, 20);
@@ -85,16 +86,18 @@ int main(int, char const**)
     textFields.push_back(&ratingField1);
     textFields.push_back(&ratingField2);
     
+    // Price range selection field
     sf::Text priceText("Price:", font, 40);
     priceText.setFillColor(sf::Color::White);
     priceText.setPosition(310, 20);
     TextField priceField1(240, 90, "0.00", font);
-    TextField priceField2(380, 90, "200.0", font);
+    TextField priceField2(380, 90, "1000.0", font);
     priceField1.setSize(100, 50);
     priceField2.setSize(100, 50);
     textFields.push_back(&priceField1);
     textFields.push_back(&priceField2);
     
+    // Search through neighborhoods
     TextField neighborSearch(1405, 5, " ", font);
     neighborSearch.setSize(510, 50);
     neighborSearch.maxText = 25;
@@ -109,6 +112,7 @@ int main(int, char const**)
     nsText.setFillColor(sf::Color::White);
     nsText.setPosition(1410, 62);
     vector<std::string> nQueryRes = neighborhoods;
+    // Neighborhood box graphics
     std::vector<NeighborhoodBox> nBoxes;
     for(int i = 0; i < 18; i++){
         nBoxes.push_back(NeighborhoodBox(nQueryRes[i], 1402, (i + 2) * 54 + 2, font));
@@ -182,20 +186,20 @@ int main(int, char const**)
     std::vector<Listing> queryRes = fullAVL.searchListings(rating1, rating2, price1, price2);
     etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
     
+    // Selected Listing Graphic
     ListingGraphic selectedGraphic(GetListings()[0], 520.f, 886.f, font);
     selectedGraphic.base.setSize(sf::Vector2f(880.f, 200.f));
     selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
     
-    
-        
+    // Populate listings on startup
     vector<ListingGraphic> listGraphics;
     for(int i = 0; i < 4; i++){
         listGraphics.push_back(ListingGraphic(queryRes[queryRes.size() - (1 + i)], 2, 280 + i * 200, font));
     }
     
     int queryIndex = 0;
-    
     string selectedNeighborhood = "";
+    
     while (window.isOpen())
     {
         // Process events
@@ -230,6 +234,7 @@ int main(int, char const**)
             }
             
             if(event.type == sf::Event::KeyPressed){
+                // Use arrow keys to move through query results
                 if(event.key.code == sf::Keyboard::Up){
                     queryIndex--;
                     if(queryIndex < 0){
@@ -270,35 +275,49 @@ int main(int, char const**)
                     }
                 }
             }
-                        
+            // If left click
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                 sf::Vector2f position = sf::Vector2f(sf::Mouse::getPosition(window));
+                // Check if listing was clicked
                 for(int i = 0; i < listGraphics.size(); i++){
                     if(listGraphics[i].base.getGlobalBounds().contains(position)){
+                        if(selectedNeighborhood != listGraphics[i].list.neighborhood){
+                            NeighborhoodBounds[selectedNeighborhood].setFillColor(unselColor);
+                            selectedNeighborhood = listGraphics[i].list.neighborhood;
+                            NeighborhoodBounds[selectedNeighborhood].setFillColor(selColor);
+                        }
                         selectedGraphic.setListing(listGraphics[i].list);
                     }
                 }
+                // Check if a neighborhood's search box was clicked
                 for(int i = 0; i < nBoxes.size(); i++){
                     if(nBoxes[i].base.getGlobalBounds().contains(position)){
+                        if(selectedNeighborhood != "")
+                            NeighborhoodBounds[selectedNeighborhood].setFillColor(unselColor);
                         selectedNeighborhood = nBoxes[i].neighborhood;
+                        NeighborhoodBounds[selectedNeighborhood].setFillColor(selColor);
                     }
                 }
-                
+                // Check if text field was clicked
                 for(auto f : textFields){
                     f->Deselect();
                     if(f->field.getGlobalBounds().contains(position))
                         f->Select();
                 }
+                // Check if Full AVL / Map AVL was clicked
                 if(chooseFull.getGlobalBounds().contains(position)){
                     useMapAVL = false;
                 }else if(chooseMap.getGlobalBounds().contains(position)){
                     useMapAVL = true;
                 }
+                // Check if deselect neighborhoods button clicked
                 else if(deselect.getGlobalBounds().contains(position)){
+                    snText.setString("Neighborhood: None");
                     if(selectedNeighborhood != "")
                         NeighborhoodBounds[selectedNeighborhood].setFillColor(unselColor);
                     selectedNeighborhood = "";
                 }
+                // Check if neighborhood search button was clicked
                 else if(neighborSearchBox.getGlobalBounds().contains(position)){
                     std::string nQuery = neighborSearch.GetText();
                     nQueryRes.clear();
@@ -306,6 +325,7 @@ int main(int, char const**)
                         if(neighborhoods[i].find(nQuery) != string::npos)
                             nQueryRes.push_back(neighborhoods[i]);
                     }
+                    // Checks if a neighborhood box was clicked
                     for(int i = 0; i < 18; i++){
                         if(i >= nQueryRes.size())
                             nBoxes[i].SetNeighborhood("");
@@ -313,13 +333,14 @@ int main(int, char const**)
                             nBoxes[i].SetNeighborhood(nQueryRes[i]);
                     }
                 }
+                // Checks if search box for listings was clicked
                 else if(searchBox.getGlobalBounds().contains(position)){
                     // Querying our data set
                     rating1 = ParseDouble(ratingField1);
                     rating2 = ParseDouble(ratingField2);
                     price1 = ParseDouble(priceField1);
                     price2 = ParseDouble(priceField2);
-                    exeTimeClock.restart();
+                    exeTimeClock.restart(); // Keeps track of time a query takes
                     if(useMapAVL)
                         queryRes = mapAVL.search(rating1, rating2, price1, price2, selectedNeighborhood);
                     else
@@ -335,6 +356,7 @@ int main(int, char const**)
                     }
                     
                     if(queryRes.size() == 0){
+                        // If no results from query, say that no listings were found
                         Listing nullListing;
                         nullListing.name = "No listings found for that query";
                         nullListing.id = 0;
@@ -346,9 +368,12 @@ int main(int, char const**)
                     queryIndex = 0;
                 }
                 else{
+                    // Check if a neighborhood on NYC map was cilcked
                     auto iter = NeighborhoodBounds.begin();
                     int conflicts = 0;
                     for(; iter != NeighborhoodBounds.end(); iter++){
+                        // Uses convex shape geometry to detect if a click is inside a neighborhood
+                        // ConvexContains.h
                         if(contains(iter->second, position)){
                             if(selectedNeighborhood != "")
                                 NeighborhoodBounds[selectedNeighborhood].setFillColor(unselColor);
