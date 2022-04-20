@@ -155,7 +155,7 @@ Node* buildTree(std::vector<Listing> L, Node* head){
 class AVLTree{
   public:
   Node* head;
-  AVLTree(vector<Listing> l){
+  AVLTree(std::vector<Listing> l){
     head=nullptr;
     head = buildTree(l, head);
   }
