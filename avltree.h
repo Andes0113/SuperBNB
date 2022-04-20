@@ -113,8 +113,10 @@ std::vector<Listing> search(Node *root,double rating1,double rating2, double pri
         }
 
         /* Current must be NULL at this point */
-        curr = s.top();
-        s.pop();
+        if(!s.empty()){
+            curr = s.top();
+            s.pop();
+        }
         if(curr->list.rating>=rating1&&curr->list.rating<=rating2&&
         curr->list.price>=price1&&curr->list.price<=price2){
           if(curr->list.neighborhood == neighborhood || neighborhood == ""){
