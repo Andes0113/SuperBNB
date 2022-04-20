@@ -1,8 +1,11 @@
 #ifndef AVLMap_h
 #define AVLMap_h
-#include "avltree.h"
 #include <iostream>
+#include <algorithm>
 #include <utility>
+#include <vector>
+#include "Listing.hpp"
+#include "avltree.h"
 #include <unordered_map>
 
 #endif /* AVLMap_h */
@@ -11,20 +14,20 @@
 
 class AVLMap {
 private:
-    unordered_map<std::string, AVLTree> map;
+    std::unordered_map<std::string, AVLTree> map;
 public:
-    AVLMap(vector<Listing> listings){
+    AVLMap(std::vector<Listing> listings){
         for(int i = 0; i < listings.size(); i++){
             if(map.count(listings[i].neighborhood)){
                 map[listings[i].neighborhood].insertListing(listings[i]);
             }else{
-                vector<Listing> newListing;
+                std::vector<Listing> newListing;
                 newListing.push_back(listings[i]);
                 map[listings[i].neighborhood] = AVLTree(newListing);
             }
         }
     }
-    vector<Listing> search(double rating1,double rating2, double price1, double price2, std::string neighborhood = ""){
+    std::vector<Listing> search(double rating1,double rating2, double price1, double price2, std::string neighborhood = ""){
         if(neighborhood != ""){
             return map[neighborhood].searchListings(rating1, rating2, price1, price2, neighborhood);
         }else{
@@ -33,7 +36,7 @@ public:
                 std::vector<Listing> newListings = iter->second.searchListings(rating1, rating2, price1, price2, neighborhood);
                 listings.insert(listings.begin(), newListings.begin(), newListings.end());
             }
-            sort(listings.begin(), listings.end(), [](const Listing& lhs, const Listing& rhs){
+            std::sort(listings.begin(), listings.end(), [](const Listing& lhs, const Listing& rhs){
                 return lhs.rating < rhs.rating;
             });
             return listings;
