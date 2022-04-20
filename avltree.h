@@ -1,5 +1,6 @@
 #include <map>
 #include <stack>
+#pragma once
 struct Node
 {
     Listing list;
@@ -127,9 +128,8 @@ std::vector<Listing> search(Node *root,double rating1,double rating2, double pri
         /* we have visited the node and its
            left subtree.  Now, it's right
            subtree's turn */
-        if(curr->list.rating <= rating2)
-          curr = curr->right;
- 
+        curr = curr->right;
+
     }
     return newListing;
 }
@@ -140,7 +140,7 @@ std::map<std::string,Node*> createMap( std::vector<Listing> l){
     std::map<std::string,Node*> mymap;
     for (std::vector<Listing>::iterator  it = l.begin(); it!=l.end() ; it++)
     {
-      mymap.insert(std::make_pair(it->neighborhood, nullptr));        
+      mymap.insert(std::make_pair(it->neighborhood, nullptr));
     }
     return mymap;
  }
@@ -157,7 +157,7 @@ Node* buildTree(std::vector<Listing> L, Node* head){
 class AVLTree{
   public:
   Node* head;
-  AVLTree(std::vector<Listing> l){
+  AVLTree(vector<Listing> l){
     head=nullptr;
     head = buildTree(l, head);
   }
