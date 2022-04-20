@@ -6,6 +6,7 @@
 #include "ConvexContains.h"
 #include "AVLMap.h"
 #include "ListingGraphics.h"
+#include "NeighborSearchGraphics.h"
 #include "TextField.h"
 #include "GenerateRandListings.h"
 
@@ -78,6 +79,8 @@ int main(int, char const**)
     ratingText.setPosition(58, 20);
     TextField ratingField1(40, 90, "0.0", font);
     TextField ratingField2(140, 90, "5.0", font);
+    ratingField1.maxText = 3;
+    ratingField2.maxText = 3;
     textFields.push_back(&ratingField1);
     textFields.push_back(&ratingField2);
     
@@ -90,6 +93,25 @@ int main(int, char const**)
     priceField2.setSize(100, 50);
     textFields.push_back(&priceField1);
     textFields.push_back(&priceField2);
+    
+    TextField neighborSearch(1405, 5, " ", font);
+    neighborSearch.setSize(510, 50);
+    neighborSearch.maxText = 25;
+    textFields.push_back(&neighborSearch);
+    sf::RectangleShape neighborSearchBox;
+    neighborSearchBox.setSize(sf::Vector2f(510, 43));
+    neighborSearchBox.setFillColor(listingColor);
+    neighborSearchBox.setOutlineColor(sf::Color::Black);
+    neighborSearchBox.setOutlineThickness(5);
+    neighborSearchBox.setPosition(1405, 60);
+    sf::Text nsText("Search Neighborhoods", font, 30);
+    nsText.setFillColor(sf::Color::White);
+    nsText.setPosition(1410, 62);
+    vector<std::string> nQueryRes = neighborhoods;
+    std::vector<NeighborhoodBox> nBoxes;
+    for(int i = 0; i < 18; i++){
+        nBoxes.push_back(NeighborhoodBox(nQueryRes[i], 1402, (i + 2) * 54 + 2, font));
+    }
     
     // Grpahic for Deselect Neighborhood button
     sf::RectangleShape deselect;
@@ -162,6 +184,8 @@ int main(int, char const**)
     ListingGraphic selectedGraphic(GetListings()[0], 520.f, 886.f, font);
     selectedGraphic.base.setSize(sf::Vector2f(880.f, 200.f));
     selectedGraphic.setListing(queryRes[queryRes.size() - 1]);
+    
+    
         
     vector<ListingGraphic> listGraphics;
     for(int i = 0; i < 4; i++){
@@ -194,9 +218,11 @@ int main(int, char const**)
                         }
                     }else{
                         char key = static_cast<char>(event.text.unicode);
-                        if(field->selected && field->GetText().size() < 6){
-                            if((event.text.unicode > 47 && event.text.unicode < 58) || key == '.')
-                                field->SetText(field->GetText() + key);
+                        if(field->selected && field->GetText().size() <= field->maxText){
+                            if(field != textFields[4])
+                                if(!((event.text.unicode > 47 && event.text.unicode < 58) || key == '.'))
+                                    break;
+                            field->SetText(field->GetText() + key);
                         }
                     }
                 }
@@ -385,7 +411,13 @@ int main(int, char const**)
             window.draw(field->text);
         }
         
-
+        for(auto nb: nBoxes){
+            window.draw(nb.base);
+            window.draw(nb.text);
+        }
+        
+        window.draw(neighborSearchBox);
+        window.draw(nsText);
         // Update the window
         window.display();
     }

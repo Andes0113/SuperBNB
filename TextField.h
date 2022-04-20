@@ -8,7 +8,9 @@ struct TextField{
     bool selected;
     sf::RectangleShape field;
     sf::Text text;
+    int maxText;
     TextField(int x, int y, std::string s, sf::Font& font){
+        maxText = 5;
         field.setSize(sf::Vector2f(50, 50));
         field.setFillColor(sf::Color::White);
         field.setOutlineColor(sf::Color::Black);
