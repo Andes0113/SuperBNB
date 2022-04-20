@@ -1,5 +1,6 @@
 #ifndef GetBounds_h
 #define GetBounds_h
+#pragma once
 #include <fstream>
 #include <iostream>
 #include <string>
