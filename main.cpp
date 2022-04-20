@@ -38,6 +38,11 @@ int main(int, char const**)
     AVLTree fullAVL(listings);
     AVLMap mapAVL(listings);
     
+    double rating1 = 0.0;
+    double rating2 = 5.0;
+    double price1 = 0.0;
+    double price2 = 10000.0;
+    
     // Set the Icon
     sf::Image icon;
     if (!icon.loadFromFile("icon.png")) {
@@ -58,11 +63,6 @@ int main(int, char const**)
     sf::Sprite NYCMap(texture);
     NYCMap.setPosition(520.f, 0.0);
     
-    vector<ListingGraphic> listGraphics;
-    for(int i = 0; i < 4; i++){
-        listGraphics.push_back(ListingGraphic(GetListings()[i], 2, 280 + i * 200, font));
-    }
-
     ListingGraphic selectedGraphic(GetListings()[0], 520.f, 886.f, font);
     selectedGraphic.base.setSize(sf::Vector2f(880.f, 200.f));
     selectedGraphic.setListing(GetListings()[0]);
@@ -106,7 +106,26 @@ int main(int, char const**)
     sf::Text sbText("Search", font, 45);
     sbText.setFillColor(sf::Color::White);
     sbText.setPosition(187, 220);
-
+    
+    sf::RectangleShape elapsedTimeBox;
+    elapsedTimeBox.setSize(sf::Vector2f(306, 50));
+    elapsedTimeBox.setFillColor(listingColor);
+    elapsedTimeBox.setOutlineColor(sf::Color::Black);
+    elapsedTimeBox.setOutlineThickness(2);
+    elapsedTimeBox.setPosition(527, 120);
+    sf::Text etText("Elapsed Time: 0ms", font, 25);
+    etText.setFillColor(sf::Color::White);
+    etText.setPosition(550, 130);
+    
+    exeTimeClock.restart();
+    std::vector<Listing> initQuery = fullAVL.searchListings(rating1, rating2, price1, price2);
+    std::cout << exeTimeClock.getElapsedTime().asMilliseconds() << std::endl;
+    etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
+    
+    vector<ListingGraphic> listGraphics;
+    for(int i = 0; i < 4; i++){
+        listGraphics.push_back(ListingGraphic(initQuery[initQuery.size() - (1 + i)], 2, 280 + i * 200, font));
+    }
     
     string selectedNeighborhood = "";
     while (window.isOpen())
@@ -133,16 +152,13 @@ int main(int, char const**)
                 }
                 else if(searchBox.getGlobalBounds().contains(position)){
                     exeTimeClock.restart();
-                    double rating1 = 0.0;
-                    double rating2 = 5.0;
-                    double price1 = 0.0;
-                    double pric2 = 10000.0;
                     std::vector<Listing> queryRes;
                     if(useMapAVL)
-                        queryRes = mapAVL.search(0.0, 5.0, 0.0, 10000.0, selectedNeighborhood);
+                        queryRes = mapAVL.search(rating1, rating2, price1, price2, selectedNeighborhood);
                     else
-                        queryRes = fullAVL.searchListings(0.0, 5.0, 0.0, 10000.0, selectedNeighborhood);
+                        queryRes = fullAVL.searchListings(rating1, rating2, price1, price2, selectedNeighborhood);
                     std::cout << exeTimeClock.getElapsedTime().asMilliseconds() << std::endl;
+                    etText.setString("Elapsed Time: " + std::to_string(exeTimeClock.getElapsedTime().asMilliseconds()) + "ms");
                     // After this, we can query our data structures with selectedNeighborhood
                     for(int i = 0; i < 4; i++){
                         if(i >= queryRes.size())
@@ -224,11 +240,13 @@ int main(int, char const**)
         window.draw(chooseFull);
         window.draw(chooseMap);
         window.draw(searchBox);
+        window.draw(elapsedTimeBox);
         
         window.draw(dsText);
         window.draw(cfText);
         window.draw(cmText);
         window.draw(sbText);
+        window.draw(etText);
         
 
         // Update the window
