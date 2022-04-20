@@ -51,7 +51,7 @@ struct ListingGraphic{
         descText1 += "Rating: " + std::to_string(l.rating).substr(0,4) + "\n";
         descText2 += "Price: $" + std::to_string(l.price).substr(0, std::to_string(l.price).find('.') + 3) + "\n";
         descText1 += l.neighborhood + "\n";
-        descText2 += l.burrow;
+        descText2 += l.borough;
         descText1 += l.roomType;
         description1.setString(descText1);
         description2.setString(descText2);

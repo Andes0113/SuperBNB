@@ -23,7 +23,7 @@ std::vector<Listing> GenerateRandomListings(int n){
         l.host_id = rand() % presets.size();
         l.name = presets[rand() % presets.size()].name;
         l.hostName = presets[rand() % presets.size()].hostName;
-        l.burrow = "";
+        l.borough = "";
         l.neighborhood = neighborhoods[i % neighborhoods.size()];
         l.roomType = presets[rand() % presets.size()].roomType;
         l.price = presets[rand() % presets.size()].price;

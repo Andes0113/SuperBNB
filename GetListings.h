@@ -16,7 +16,7 @@ vector<Listing> GetListings(){
     string s;
     getline(file, s);
     while(!file.fail()){
-        string id,name,host_id,host_name,burrow,neighborhood,latitude,longitude,room_type,price,number_of_reviews,numHostListings,rating;
+        string id,name,host_id,host_name,borough,neighborhood,latitude,longitude,room_type,price,number_of_reviews,numHostListings,rating;
         getline(file, id, ',');
         getline(file, name,',');
         if(name[0] == '"' && name.substr(1,name.length() - 1).find('"') == 1){
@@ -29,7 +29,7 @@ vector<Listing> GetListings(){
             getline(file, s, ',');
             host_name += s;
         }
-        getline(file, burrow,',');
+        getline(file, borough,',');
         getline(file, neighborhood,',');
         while(std::count(host_name.begin(), host_name.end(), '"') % 2 == 1){
             getline(file, s, ',');
@@ -47,7 +47,7 @@ vector<Listing> GetListings(){
             l.id = stoi(id);
             l.name = name;
             l.host_id = stoi(host_id);
-            l.burrow = burrow;
+            l.borough = borough;
             l.neighborhood = neighborhood;
             l.roomType = room_type;
             l.price = stod(price);

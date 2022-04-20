@@ -8,6 +8,6 @@
 
 struct Listing{
     int id, host_id, numHostListings;
-    std::string name, hostName, burrow, neighborhood, roomType;
+    std::string name, hostName, borough, neighborhood, roomType;
     double price,rating;
 };

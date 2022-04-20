@@ -14,10 +14,10 @@ int main(){
     ofstream outfile("NYC2019Data.csv");
     string header;
     getline(file, header);
-    outfile << "id,name,host_id,host_name,burrow,neighborhood,latitude,longitude,room_type,price,number_of_reviews,numHostListings,rating\n";
+    outfile << "id,name,host_id,host_name,borough,neighborhood,latitude,longitude,room_type,price,number_of_reviews,numHostListings,rating\n";
     while(!file.fail()){
         string s;
-        string id, name, host_id, host_name, burrow, neighborhood, latitude, longitude, room_type, price, number_of_reviews, numHostListings;
+        string id, name, host_id, host_name, borough, neighborhood, latitude, longitude, room_type, price, number_of_reviews, numHostListings;
         getline(file, id,',');
         if(id != ""){
             cout << "id: " << id << endl;
@@ -35,8 +35,8 @@ int main(){
                 host_name += s;
             }
             cout << "host_name: " << host_name << endl;
-            getline(file, burrow,',');
-            cout << "neighbourhood_group: " << burrow << endl;
+            getline(file, borough,',');
+            cout << "neighbourhood_group: " << borough << endl;
             getline(file, neighborhood,',');
             cout << "neighbourhood: " << neighborhood << endl;
             getline(file, latitude,',');
@@ -65,7 +65,7 @@ int main(){
             cout << "calculated_host_listings_count: " << numHostListings << endl;
             getline(file, s);
             cout << "availability_365: " << s << endl;
-            bool validLine = !id.empty() && !name.empty() && !host_id.empty() && !burrow.empty() && !neighborhood.empty() && !numHostListings.empty();
+            bool validLine = !id.empty() && !name.empty() && !host_id.empty() && !borough.empty() && !neighborhood.empty() && !numHostListings.empty();
             validLine = validLine && !latitude.empty() && !longitude.empty() && !room_type.empty() && !price.empty() && !numHostListings.empty();
             if(validLine){
                 string rating;
@@ -81,9 +81,9 @@ int main(){
                     rating = rating.substr(0, rating.find('.') + 3);
                 }
                 cout << "rating: " << rating << endl;
-                // id, name, host_id, host_name, burrow, neighborhood, latitude, longitude, room_type, price, number_of_reviews, numHostListings;
+                // id, name, host_id, host_name, borough, neighborhood, latitude, longitude, room_type, price, number_of_reviews, numHostListings;
                 outfile << id << "," << name << "," << host_id << "," << host_name << ",";
-                outfile << burrow << "," << neighborhood << "," << latitude << "," << longitude << ",";
+                outfile << borough << "," << neighborhood << "," << latitude << "," << longitude << ",";
                 outfile << room_type << "," << price << "," << number_of_reviews << "," << numHostListings << "," << rating << "\n";
             }
         }
