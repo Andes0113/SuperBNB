@@ -8,7 +8,7 @@ Sources:
 
 [Neighborhood Boundary Data](https://secretnyc.co/map-nyc-neighborhood-borders/)
 
-[Convex Shape Boundry Detection](http://alienryderflex.com/polygon/)
+[Convex Shape Boundary Detection](http://alienryderflex.com/polygon/)
 
 
 Group Members:
