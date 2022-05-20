@@ -2,17 +2,17 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <unordered_map>
-#include "GetBounds.h"
-#include "GetListings.h"
-#include "ConvexContains.h"
-#include "AVLMap.h"
-#include "ListingGraphics.h"
-#include "NeighborSearchGraphics.h"
-#include "TextField.h"
-#include "GenerateRandListings.h"
+#include "Collisions/GetBounds.h"
+#include "Listings/GetListings.h"
+#include "Collisions/ConvexContains.h"
+#include "DS/AVLMap.h"
+#include "Graphics/ListingGraphics.h"
+#include "Graphics/NeighborSearchGraphics.h"
+#include "Graphics/TextField.h"
+#include "Listings/GenerateRandListings.h"
 
 // Only for XCode build
-//#include "ResourcePath.hpp"
+// #include "ResourcePath.hpp"
 
 int main(int, char const**)
 {

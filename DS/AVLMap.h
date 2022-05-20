@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <utility>
 #include <vector>
-#include "Listing.hpp"
-#include "avltree.h"
+#include "../Listings/Listing.h"
+#include "AVLTree.h"
 #include <unordered_map>
 
 #endif /* AVLMap_h */

@@ -1,5 +1,5 @@
-#ifndef Listing_hpp
-#define Listing_hpp
+#ifndef Listing_h
+#define Listing_h
 #pragma once
 #include <stdio.h>
 #include <string>

@@ -9,7 +9,7 @@
 using namespace std;
 #endif /* GetBounds_h */
 
-//#include "ResourcePath.hpp" // Only for XCode build
+// #include "ResourcePath.hpp" // Only for XCode build
 
 // We want this to fit to 886 px
 double latitudeToPixel(double latitude){
@@ -19,11 +19,12 @@ double latitudeToPixel(double latitude){
 double longitudeToPixel(double longitude){
     return (74.27814874911644 + longitude) * 1473.42466645383923 + 520;
 }
+
 unordered_map<string, sf::ConvexShape> GetNeighborhoodBounds(){
     sf::Color usColor = sf::Color(0,0,0,0);
     unordered_map<string, sf::ConvexShape> Neighborhoods;
-    //ifstream file(resourcePath() + "NeighborhoodBounds.csv"); // Only for XCode build
-    ifstream file("NeighborhoodBounds.csv"); // Regular build
+    // ifstream file(resourcePath() + "NeighborhoodBounds.csv"); // Only for XCode build
+   ifstream file("NeighborhoodBounds.csv"); // Regular build
     string s;
     getline(file, s);
     int numLines = 0;
@@ -59,7 +60,7 @@ unordered_map<string, sf::ConvexShape> GetNeighborhoodBounds(){
         n.setFillColor(usColor);
         n.setOutlineColor(sf::Color::Black);
         n.setOutlineThickness(1.1);
-        if(neighborhood == "Theater District/Times Square") 
+        if(neighborhood == "Theater District/Times Square")
             neighborhood = "Theater District"; // Fixes discrepancy between files
         Neighborhoods[neighborhood] = n;
     }

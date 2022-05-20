@@ -1,11 +1,11 @@
 #ifndef GenerateRandListings_h
 #define GenerateRandListings_h
 #include <SFML/Graphics.hpp>
-#include "Listing.hpp"
+#include "Listing.h"
 #include "GetListings.h"
 #include <math.h>
 #include <stdlib.h>
-#include "GetBounds.h"
+#include "../Collisions/GetBounds.h"
 
 #endif /* GenerateRandListings_h */
 

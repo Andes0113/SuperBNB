@@ -1,7 +1,7 @@
 #ifndef ListingGraphics_h
 #define ListingGraphics_h
 
-#include "Listing.hpp"
+#include "../Listings/Listing.h"
 #include <SFML/Graphics.hpp>
 
 #endif /* ListingGraphics_h */

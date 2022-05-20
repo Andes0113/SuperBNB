@@ -3,16 +3,16 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include "Listing.hpp"
+#include "Listing.h"
 #pragma once
 using namespace std;
 
-//#include "ResourcePath.hpp" // Xcode build only
+// #include "ResourcePath.hpp" // Xcode build only
 
 vector<Listing> GetListings(){
     vector<Listing> listings;
-    //ifstream file(resourcePath() + "NYC2019Data.csv"); // Xcode build only
-    ifstream file("NYC2019Data.csv"); // Normal Build
+    // ifstream file(resourcePath() + "NYC2019Data.csv"); // Xcode build only
+   ifstream file("NYC2019Data.csv"); // Normal Build
     string s;
     getline(file, s);
     while(!file.fail()){
